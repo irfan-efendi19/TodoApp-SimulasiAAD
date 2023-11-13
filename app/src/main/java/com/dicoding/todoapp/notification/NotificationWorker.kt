@@ -67,7 +67,7 @@ class NotificationWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, p
     }
 
     companion object {
-        const val CHANNEL_ID = "channel_01"
+        const val CHANNEL_ID = "channel_1"
         const val NOTIFICATION_ID = 1
     }
 

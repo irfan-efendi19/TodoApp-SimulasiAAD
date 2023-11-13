@@ -6,6 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.dicoding.todoapp.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -35,16 +38,19 @@ abstract class TaskDatabase : RoomDatabase() {
                     context.applicationContext,
                     TaskDatabase::class.java,
                     "task.db"
-                ).fallbackToDestructiveMigration()
+                )
+//                    .fallbackToDestructiveMigration()
                     .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
-                            INSTANCE?.let { database ->
-                                Executors.newSingleThreadScheduledExecutor().execute {
-                                    fillWithStartingData(
-                                        context.applicationContext,
-                                        database.taskDao()
-                                    )
+                            Executors.newSingleThreadScheduledExecutor().execute {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    INSTANCE?.let { database ->
+                                        fillWithStartingData(
+                                            context.applicationContext,
+                                            database.taskDao()
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -57,7 +63,7 @@ abstract class TaskDatabase : RoomDatabase() {
 
 
         private fun fillWithStartingData(context: Context, dao: TaskDao) {
-            val task = loadJsonArray(context)
+            val task = loadJson(context)
             try {
                 if (task != null) {
                     for (i in 0 until task.length()) {
@@ -78,7 +84,7 @@ abstract class TaskDatabase : RoomDatabase() {
             }
         }
 
-        private fun loadJsonArray(context: Context): JSONArray? {
+        private fun loadJson(context: Context): JSONArray? {
             val builder = StringBuilder()
             val `in` = context.resources.openRawResource(R.raw.task)
             val reader = BufferedReader(InputStreamReader(`in`))

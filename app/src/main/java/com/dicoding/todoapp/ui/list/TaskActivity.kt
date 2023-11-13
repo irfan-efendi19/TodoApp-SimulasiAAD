@@ -43,11 +43,10 @@ class TaskActivity : AppCompatActivity() {
         recycler = findViewById(R.id.rv_task)
         recycler.layoutManager = LinearLayoutManager(this)
 
-        initAction()
+        init()
 
         val factory = ViewModelFactory.getInstance(this)
         taskViewModel = ViewModelProvider(this, factory).get(TaskViewModel::class.java)
-
         taskViewModel.tasks.observe(this, Observer(this::showRecyclerView))
 
         //TODO 15 : Fixing bug : snackBar not show when task completed
@@ -113,7 +112,7 @@ class TaskActivity : AppCompatActivity() {
         }
     }
 
-    private fun initAction() {
+    private fun init() {
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
@@ -130,6 +129,7 @@ class TaskActivity : AppCompatActivity() {
                 return false
             }
 
+            //swipe action
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val task = (viewHolder as TaskAdapter.TaskViewHolder).getTask
                 taskViewModel.deleteTask(task)
