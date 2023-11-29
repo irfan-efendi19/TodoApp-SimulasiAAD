@@ -31,7 +31,7 @@ class DetailTaskActivity : AppCompatActivity() {
         btnDelete = findViewById(R.id.btn_delete_task)
 
         val factory = ViewModelFactory.getInstance(this)
-        viewModel = ViewModelProvider(this, factory).get(DetailTaskViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[DetailTaskViewModel::class.java]
 
         //TODO 11 : Show detail task and implement delete action
         if (intent.extras != null) {

@@ -31,7 +31,10 @@ class NotificationWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, p
         return TaskStackBuilder.create(applicationContext).run {
             addNextIntentWithParentStack(intent)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                getPendingIntent(
+                    0,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
             } else {
                 getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
             }
@@ -53,7 +56,12 @@ class NotificationWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, p
             NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications)
                 .setContentTitle(task.title)
-                .setContentText(String.format(notifyContent!!, DateConverter.convertMillisToString(task.dueDateMillis)))
+                .setContentText(
+                    String.format(
+                        notifyContent!!,
+                        DateConverter.convertMillisToString(task.dueDateMillis)
+                    )
+                )
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
